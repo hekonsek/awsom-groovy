@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.github.hekonsek.awsom</groupId>
+        <artifactId>awsom</artifactId>
+        <version>0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>awsom-bom</artifactId>
+    <name>${project.artifactId}</name>
+    <packaging>pom</packaging>
+
+    <properties>
+        <!-- Dependencies versions -->
+        <assertj.version>3.8.0</assertj.version>
+        <awaitilty.version>3.0.0</awaitilty.version>
+        <commons-configuration.version>2.1.1</commons-configuration.version>
+        <commons-io.version>2.5</commons-io.version>
+        <commons-lang3.version>3.6</commons-lang3.version>
+        <groovy.version>2.4.12</groovy.version>
+        <guava.version>23.0</guava.version>
+        <jackson.version>2.9.1</jackson.version>
+        <junit.version>4.12</junit.version>
+        <kafka.version>0.11.0.1</kafka.version>
+        <kafkaless.version>0.6-SNAPSHOT</kafkaless.version>
+        <logback.version>1.2.2</logback.version>
+        <slf4j.version>1.7.25</slf4j.version>
+        <undertow.version>1.4.20.Final</undertow.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>${groovy.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
