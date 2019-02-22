@@ -2,6 +2,7 @@ package com.github.hekonsek.awsom.codebuild
 
 import com.amazonaws.services.codebuild.AWSCodeBuildClient
 import com.amazonaws.services.codebuild.model.CreateProjectRequest
+import com.amazonaws.services.codebuild.model.DeleteProjectRequest
 import com.amazonaws.services.codebuild.model.ProjectArtifacts
 import com.amazonaws.services.codebuild.model.ProjectEnvironment
 import com.amazonaws.services.codebuild.model.ProjectSource
@@ -22,7 +23,7 @@ class Build {
         new Build()
     }
 
-    void create() {
+    Build create() {
         def project = new CreateProjectRequest()
 
         if (name == null) {
@@ -67,6 +68,13 @@ class Build {
                 withType("s3").
                 withLocation('capsilon-hekonsek')
         AWSCodeBuildClient.builder().build().createProject(project)
+
+        this
+    }
+
+    Build delete() {
+        AWSCodeBuildClient.builder().build().deleteProject(new DeleteProjectRequest().withName(name))
+        this
     }
 
     String name() {
