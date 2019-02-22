@@ -13,9 +13,10 @@ class ApplicationTest {
     void shouldCreatePipeline() {
         // Given
         def applicationName = randomUUID().toString()
+        def gitUrl = 'https://github.com/hekonsek/awsom-spring-rest.git'
 
         // When
-        application().name(applicationName).create()
+        application().name(applicationName).gitUrl(gitUrl).create()
 
         // Then
         assertThat(findApplication(applicationName)).isNotNull()

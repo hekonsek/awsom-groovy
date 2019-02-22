@@ -15,9 +15,11 @@ import static com.amazonaws.services.codebuild.model.SourceType.GITHUB
 
 class Build {
 
-    String name
+    private String name
 
-    String buildImage = 'aws/codebuild/java:openjdk-11'
+    private String gitUrl
+
+    private String buildImage = 'aws/codebuild/java:openjdk-11'
 
     static Build build() {
         new Build()
@@ -63,7 +65,7 @@ class Build {
 
         project.source = new ProjectSource().
                 withType(GITHUB).
-                withLocation('https://github.com/hekonsek/spring-boot-rest-prometheus-java11')
+                withLocation(gitUrl)
         project.artifacts = new ProjectArtifacts().
                 withType("s3").
                 withLocation('capsilon-hekonsek')
@@ -83,6 +85,15 @@ class Build {
 
     Build name(String name) {
         this.name = name
+        this
+    }
+
+    String gitUrl() {
+        return gitUrl
+    }
+
+    Build gitUrl(String gitUrl) {
+        this.gitUrl = gitUrl
         this
     }
 

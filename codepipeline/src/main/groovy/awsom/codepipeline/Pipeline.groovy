@@ -1,7 +1,6 @@
 package awsom.codepipeline
 
-import com.amazonaws.services.codebuild.AWSCodeBuildClient
-import com.amazonaws.services.codebuild.model.DeleteProjectRequest
+
 import com.amazonaws.services.codepipeline.AWSCodePipelineClient
 import com.amazonaws.services.codepipeline.model.*
 import com.amazonaws.services.identitymanagement.AmazonIdentityManagementClientBuilder
@@ -9,11 +8,11 @@ import com.amazonaws.services.identitymanagement.model.AttachRolePolicyRequest
 import com.amazonaws.services.identitymanagement.model.CreateRoleRequest
 import com.google.common.collect.ImmutableMap
 
-import java.nio.channels.Pipe
-
 class Pipeline {
 
     private String name
+
+    private String gitUrl
 
     private String buildName
 
@@ -46,6 +45,8 @@ class Pipeline {
                     withPolicyArn('arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess'))
         }
 
+        def gitProject = gitUrl.replaceFirst(/https:\/\/github.com\//, '').replaceFirst(/\.git/, '').split(/\//)
+
         new AWSCodePipelineClient().createPipeline(new CreatePipelineRequest().withPipeline(
                 new PipelineDeclaration().withName(name).withRoleArn(role.arn).withStages(
                         new StageDeclaration().withName("source").withActions(
@@ -53,7 +54,7 @@ class Pipeline {
                                         new ActionTypeId().withOwner(ActionOwner.ThirdParty).
                                                 withProvider('GitHub').withCategory('Source').
                                                 withVersion("1")
-                                ).withConfiguration(ImmutableMap.of("Owner", "hekonsek", "Repo", "spring-boot-rest-prometheus-java11",
+                                ).withConfiguration(ImmutableMap.of("Owner", gitProject.first(), "Repo", gitProject.last(),
                                 "Branch", "master", 'OAuthToken', System.getenv('GITHUB_TOKEN'))).
                                 withOutputArtifacts(new OutputArtifact().withName('xxx'))
                         ),
@@ -86,6 +87,15 @@ class Pipeline {
 
     Pipeline name(String name) {
         this.name = name
+        this
+    }
+
+    String gitUrl() {
+        return gitUrl
+    }
+
+    Pipeline gitUrl(String gitUrl) {
+        this.gitUrl = gitUrl
         this
     }
 
