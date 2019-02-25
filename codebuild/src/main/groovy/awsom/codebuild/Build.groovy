@@ -1,14 +1,8 @@
 package awsom.codebuild
 
+import awsom.codebuild.Build
 import com.amazonaws.services.codebuild.AWSCodeBuildClient
-import com.amazonaws.services.codebuild.model.BatchGetProjectsRequest
-import com.amazonaws.services.codebuild.model.CreateProjectRequest
-import com.amazonaws.services.codebuild.model.DeleteProjectRequest
-import com.amazonaws.services.codebuild.model.ListBuildsForProjectRequest
-import com.amazonaws.services.codebuild.model.ListProjectsRequest
-import com.amazonaws.services.codebuild.model.ProjectArtifacts
-import com.amazonaws.services.codebuild.model.ProjectEnvironment
-import com.amazonaws.services.codebuild.model.ProjectSource
+import com.amazonaws.services.codebuild.model.*
 import com.amazonaws.services.identitymanagement.AmazonIdentityManagementClientBuilder
 import com.amazonaws.services.identitymanagement.model.AttachRolePolicyRequest
 import com.amazonaws.services.identitymanagement.model.CreateRoleRequest
