@@ -63,7 +63,16 @@ class Pipeline {
                                         new ActionTypeId().withOwner(ActionOwner.AWS).
                                                 withProvider('CodeBuild').withCategory('Build').
                                                 withVersion("1")
-                                ).withConfiguration(ImmutableMap.of('ProjectName', buildName)).withInputArtifacts(new InputArtifact().withName('xxx'))
+                                ).withConfiguration(ImmutableMap.of('ProjectName', buildName)).
+                                        withInputArtifacts(new InputArtifact().withName('xxx')).
+                                        withOutputArtifacts(Collections.singleton(new OutputArtifact().withName('build')))
+                        ),
+                        new StageDeclaration().withName("dockerize").withActions(
+                                new ActionDeclaration().withName('dockerize').withActionTypeId(
+                                        new ActionTypeId().withOwner(ActionOwner.AWS).
+                                                withProvider('CodeBuild').withCategory('Build').
+                                                withVersion("1")
+                                ).withConfiguration(ImmutableMap.of('ProjectName', "${buildName}-dockerize".toString())).withInputArtifacts(new InputArtifact().withName('build'))
                         )
                 ).withArtifactStore(new ArtifactStore().withType('S3').withLocation('capsilon-hekonsek'))
         ))

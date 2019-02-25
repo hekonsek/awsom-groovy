@@ -1,8 +1,9 @@
 package awsom.application
 
 import awsom.codepipeline.Pipeline
-import com.github.hekonsek.awsom.codebuild.Build
+import awsom.codebuild.Build
 
+import static awsom.codebuild.Build.deleteBuild
 import static awsom.codepipeline.Pipeline.findPipeline
 
 class Application {
@@ -17,12 +18,16 @@ class Application {
 
     Application create() {
         def build = new Build().name(name).gitUrl(gitUrl).create()
+        new Build().name("${name}-dockerize").
+                gitUrl(gitUrl).buildSpec('buildspec-docker.yml').
+                buildImage('aws/codebuild/docker:18.09.0').create()
         new Pipeline().name(name).gitUrl(gitUrl).buildName(build.name()).create()
         this
     }
 
     static deleteApplication(String name) {
-        new Build().name(name).delete()
+        deleteBuild(name)
+        deleteBuild("${name}-dockerize")
         new Pipeline().name(name).delete()
         this
     }

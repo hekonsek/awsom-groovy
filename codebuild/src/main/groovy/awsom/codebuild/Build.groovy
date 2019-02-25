@@ -1,8 +1,11 @@
-package com.github.hekonsek.awsom.codebuild
+package awsom.codebuild
 
 import com.amazonaws.services.codebuild.AWSCodeBuildClient
+import com.amazonaws.services.codebuild.model.BatchGetProjectsRequest
 import com.amazonaws.services.codebuild.model.CreateProjectRequest
 import com.amazonaws.services.codebuild.model.DeleteProjectRequest
+import com.amazonaws.services.codebuild.model.ListBuildsForProjectRequest
+import com.amazonaws.services.codebuild.model.ListProjectsRequest
 import com.amazonaws.services.codebuild.model.ProjectArtifacts
 import com.amazonaws.services.codebuild.model.ProjectEnvironment
 import com.amazonaws.services.codebuild.model.ProjectSource
@@ -19,17 +22,25 @@ class Build {
 
     private String gitUrl
 
+    private String buildSpec = 'buildspec.yml'
+
     private String buildImage = 'aws/codebuild/java:openjdk-11'
 
     static Build build() {
         new Build()
     }
 
+    // CRUD
+
     Build create() {
+        if (gitUrl == null) {
+            throw new RuntimeException('Git URL of project cannot be empty.')
+        }
+
         def project = new CreateProjectRequest()
 
         if (name == null) {
-            throw new RuntimeException("Project name cannot be empty.")
+            throw new RuntimeException('Build project name cannot be empty.')
         }
         project.name = name
 
@@ -60,12 +71,15 @@ class Build {
                     withPolicyArn('arn:aws:iam::aws:policy/CloudWatchLogsFullAccess'))
             iam.attachRolePolicy(new AttachRolePolicyRequest().withRoleName('awsom-codebuild-default').
                     withPolicyArn('arn:aws:iam::aws:policy/AmazonS3FullAccess'))
+            iam.attachRolePolicy(new AttachRolePolicyRequest().withRoleName('awsom-codebuild-default').
+                    withPolicyArn('arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess'))
         }
         project.serviceRole = role.arn
 
         project.source = new ProjectSource().
                 withType(GITHUB).
-                withLocation(gitUrl)
+                withLocation(gitUrl).
+                withBuildspec(buildSpec)
         project.artifacts = new ProjectArtifacts().
                 withType("s3").
                 withLocation('capsilon-hekonsek')
@@ -74,10 +88,19 @@ class Build {
         this
     }
 
-    Build delete() {
+    static void deleteBuild(String name) {
         AWSCodeBuildClient.builder().build().deleteProject(new DeleteProjectRequest().withName(name))
-        this
     }
+
+    static Build findBuild(String name) {
+        def projects = AWSCodeBuildClient.builder().build().batchGetProjects(new BatchGetProjectsRequest().withNames(name)).projects
+        if (projects.empty) {
+            return null
+        }
+        new Build().name(name).gitUrl(projects.first().source.location)
+    }
+
+    // Configuration getters and setters
 
     String name() {
         return name
@@ -97,6 +120,15 @@ class Build {
         this
     }
 
+    String buildSpec() {
+        return buildSpec
+    }
+
+    Build buildSpec(String buildSpec) {
+        this.buildSpec = buildSpec
+        this
+    }
+
     String buildImage() {
         return buildImage
     }
@@ -104,10 +136,6 @@ class Build {
     Build buildImage(String buildImage) {
         this.buildImage = buildImage
         this
-    }
-
-    static void main(String[] args) {
-        build().name("foo11").create()
     }
 
 }
