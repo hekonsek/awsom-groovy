@@ -1,6 +1,6 @@
-package awsom.codepipeline
+package awsom.application
 
-
+import awsom.codepipeline.Pipeline
 import com.github.hekonsek.awsom.codebuild.Build
 
 import static awsom.codepipeline.Pipeline.findPipeline

@@ -1,9 +1,8 @@
-package awsom.codepipeline
-
+package awsom.application
 
 import org.junit.Test
 
-import static awsom.codepipeline.Application.*
+import static awsom.application.Application.*
 import static java.util.UUID.randomUUID
 import static org.assertj.core.api.Assertions.assertThat
 
